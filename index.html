@@ -1306,7 +1306,7 @@ function exportTrackWav(idx, endian){
   }
   const info = readTrackAudioInfo(DLC.sections.AMF[idx]);
   try{
-    const pcm = decodeA18Payload(info.bitrate || 16000, info.audioBytes, endian || 'le');
+    const pcm = decodeA18Payload(info.bitrate || 16000, info.audioBytes, endian || 'be');
     const wav = pcmToWavBytes(pcm, 16000);
     downloadBytes('track_'+String(idx).padStart(4,'0')+'.wav', wav);
   }catch(err){
@@ -1335,7 +1335,7 @@ function exportAllTracksWav(endian){
   }
   const st = document.getElementById('exportAudioStatus');
   let n = 0;
-  DLC.sections.AMF.forEach((_,i)=>{ exportTrackWav(i, endian || 'le'); n++; });
+  DLC.sections.AMF.forEach((_,i)=>{ exportTrackWav(i, endian || 'be'); n++; });
   if(st) st.textContent = '✓ Avviato download di '+n+' file .wav.';
 }
 
@@ -1360,7 +1360,7 @@ function renderTracksTable(){
     btn.onclick = ()=> exportTrackA18(+btn.dataset.exportA18);
   });
   tbody.querySelectorAll('button[data-export-wav]').forEach(btn=>{
-    btn.onclick = ()=> exportTrackWav(+btn.dataset.exportWav, 'le');
+    btn.onclick = ()=> exportTrackWav(+btn.dataset.exportWav, 'be');
   });
   const allBtn = document.getElementById('exportAllA18Btn');
   if(allBtn && !allBtn._bound){
@@ -1370,7 +1370,7 @@ function renderTracksTable(){
   const allWav = document.getElementById('exportAllWavBtn');
   if(allWav && !allWav._bound){
     allWav._bound = true;
-    allWav.onclick = ()=> exportAllTracksWav('le');
+    allWav.onclick = ()=> exportAllTracksWav('be');
   }
 }
 
